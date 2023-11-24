@@ -39,3 +39,18 @@ Features :
 
 
 Play the timeless Tic Tac Toe game with a stylish NEON twist! Our free Android app offers a cool color-gradient design, making the classic gameplay visually appealing. Challenge friends or the smart AI for endless entertainment. Our Neon AI adapts to your skills, providing a consistently exciting experience. Whether you're a kid or an adult, enjoy single and two-player modes with captivating NEON visuals. This game combines the classic charm of Tic Tac Toe with a modern and stylish design. 
+
+--------------------------------------------------------------------------------------------------
+
+Tic Tac Toe
+Neon design
+Android game
+Two-player mode
+Single-player mode
+Puzzle game
+Color-gradient
+Classic gameplay
+Entertainment
+AI opponent
+
+tic-tac-toe,neon-design,android-game,two-player-mode,single-player-mode,puzzle-game,color-gradient,classic-gameplay,entertainment,ai-opponent
