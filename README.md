@@ -3,7 +3,7 @@
 
 **Privacy Policy for Tic Tac Toe Neon**
 
-At Tic Tac Toe Neon, accessible from [Your App's URL], one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Tic Tac Toe Neon and how we use it.
+At Tic Tac Toe Neon, accessible from [Google Play Store](https://play.google.com/store/apps/details?id=com.munya_m.tictactoeneon), one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Tic Tac Toe Neon and how we use it.
 
 If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.
 
