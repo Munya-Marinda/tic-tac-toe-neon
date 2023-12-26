@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import GamePlayPreview from "./components/GamePlayPreview";
+import GamePlayPreview from "../components/GamePlayPreview";
 import {
   StyleSheet,
   Text,
@@ -8,12 +8,15 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  BackHandler,
+  Alert,
 } from "react-native";
+import { GameStatsBar } from "../components/GameStatsBar";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-export default function GameScreen({ changeGameType }) {
+export default function GameScreen({ handleScreen }) {
   const [playerTurn, setPlayerTurn] = useState(1);
   const [gameOver, setGameOver] = useState({
     result: false,
@@ -114,10 +117,33 @@ export default function GameScreen({ changeGameType }) {
     }
   }, [gameBoardState]);
   //
-  //
-  const handleGameType = (type) => {
-    changeGameType(type);
-  };
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Forfeit Game?", "Do you want forfeit the game?", [
+        {
+          text: "No",
+          onPress: () => {
+            return false;
+          },
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            handleScreen("Home");
+          },
+        },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   //
   const checkWinType = () => {
     const gameOver =
@@ -241,6 +267,7 @@ export default function GameScreen({ changeGameType }) {
     <View style={styles.container}>
       {!gameOver.result ? (
         <>
+          <GameStatsBar handleScreen={handleScreen} resetGame={resetGame} />
           <Text
             style={{
               fontSize: 20,
@@ -563,101 +590,16 @@ export default function GameScreen({ changeGameType }) {
               </TouchableOpacity>
             </View>
           </View>
-
-          <View style={styles.horizontal_container}>
-            <TouchableOpacity
-              onPress={() => {
-                handleGameType(null);
-              }}
-            >
-              <Image
-                source={require("../../assets/game-assets/button-menu.png")}
-                style={{
-                  width: windowWidth * 0.2,
-                  resizeMode: "contain",
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                resetGame(false);
-              }}
-            >
-              <Image
-                source={require("../../assets/game-assets/button-restart.png")}
-                style={{
-                  width: windowWidth * 0.2,
-                  resizeMode: "contain",
-                }}
-              />
-            </TouchableOpacity>
-          </View>
         </>
       ) : (
         <>
-          <Text
-            style={{
-              fontSize: 20,
-              marginTop: 30,
-              color: "white",
-              fontWeight: "bold",
-              textTransform: "uppercase",
-            }}
-          >
-            {gameOver.message}
-          </Text>
-
-          <GamePlayPreview _gameBoardState={_gameBoardState} />
-
-          <View style={{}}>
-            <View style={styles.horizontal_container_center}>
-              <TouchableOpacity
-                onPress={() => {
-                  setGameOver({
-                    result: false,
-                    message: "New Game",
-                  });
-                }}
-              >
-                <Image
-                  source={require("../../assets/game-assets/button-play-next.png")}
-                  style={{
-                    width: windowWidth * 0.2,
-                    resizeMode: "contain",
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.horizontal_container}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleGameType(null);
-                }}
-              >
-                <Image
-                  source={require("../../assets/game-assets/button-menu.png")}
-                  style={{
-                    width: windowWidth * 0.2,
-                    resizeMode: "contain",
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  resetGame(true);
-                }}
-              >
-                <Image
-                  source={require("../../assets/game-assets/button-restart.png")}
-                  style={{
-                    width: windowWidth * 0.2,
-                    resizeMode: "contain",
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <GamePlayPreview
+            resetGame={resetGame}
+            setGameOver={setGameOver}
+            message={gameOver.message}
+            handleScreen={handleScreen}
+            _gameBoardState={_gameBoardState}
+          />
         </>
       )}
     </View>
@@ -667,16 +609,16 @@ export default function GameScreen({ changeGameType }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 30,
     width: windowWidth,
     height: windowHeight,
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "flex-start",
   },
   gameButtonContainer: {
+    marginTop: 60,
     width: windowWidth / 1.2,
     height: windowWidth / 1.2,
-    // borderWidth: 3,
-    // borderColor: "red",
   },
   gameButtonSubContainer: {
     display: "flex",
@@ -701,6 +643,7 @@ const styles = StyleSheet.create({
   gameScoreContainer: {
     display: "flex",
     flexDirection: "row",
+    marginTop: 30,
     alignItems: "center",
     width: windowWidth * 0.8,
     justifyContent: "space-between",

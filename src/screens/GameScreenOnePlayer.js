@@ -7,14 +7,24 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Alert,
+  BackHandler,
 } from "react-native";
-import { newGameBoardState } from "./js/GameBot";
-import GamePlayPreview from "./components/GamePlayPreview";
+import { newGameBoardState } from "../js/GameBot";
+import GamePlayPreview from "../components/GamePlayPreview";
+import { GameStatsBar } from "../components/GameStatsBar";
+import { addScore } from "../js/functions";
+import GamePlayPreviewOnePlayer from "../components/GamePlayPreviewOnePlayer";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-export default function GameScreen({ gameType, changeGameType }) {
+export default function GameScreen({
+  handleScreen,
+  gameLevel,
+  MAX_GAME_PLAY = 10,
+}) {
+  const [gamePlaysCount, setGamePlaysCount] = useState(1);
   const [playerTurn, setPlayerTurn] = useState(1);
   const [gameOver, setGameOver] = useState({
     result: false,
@@ -45,28 +55,33 @@ export default function GameScreen({ gameType, changeGameType }) {
     9: 0,
   });
   //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Forfeit Game?", "Do you want forfeit the game?", [
+        {
+          text: "No",
+          onPress: () => {
+            return false;
+          },
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            handleScreen("Home");
+          },
+        },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   //
   const checkWinType = (boardBoxNumber, _playerTurn) => {
     function delay2(ms) {
@@ -76,7 +91,7 @@ export default function GameScreen({ gameType, changeGameType }) {
       setBotPlaying(true);
       await delay2(50);
       setBotPlaying(false);
-      const botPlay = newGameBoardState(currentGameBoardState);
+      const botPlay = newGameBoardState(currentGameBoardState, gameLevel);
       setGameBoardState(botPlay.gameBoardState);
       checkWinType(botPlay.boxNumber, 2);
       setPlayerTurn(1);
@@ -161,7 +176,9 @@ export default function GameScreen({ gameType, changeGameType }) {
       result = _playerTurn;
     }
     //
+    //
     if (result === true && typeof result === "boolean") {
+      handleAddScore();
       setGameOver({
         result: true,
         message: "Game Draw.",
@@ -180,6 +197,7 @@ export default function GameScreen({ gameType, changeGameType }) {
       });
       //
     } else if (result === 1 || result === 2) {
+      handleAddScore();
       //
       setGameOver({
         result: true,
@@ -217,25 +235,28 @@ export default function GameScreen({ gameType, changeGameType }) {
       //
     } else if (result === null) {
       if (_playerTurn === 1) {
-        // setPlayerTurn(1);
-        //
-        //
-        //
         botPlay();
-        //
-        //
-        //
-        //
-      } else if (_playerTurn === 2) {
       }
     }
     //
   };
-
   //
-  const handleGameType = (type) => {
-    changeGameType(type);
+  const handleAddScore = () => {
+    setGamePlaysCount(gamePlaysCount + 1);
+    if (gamePlaysCount + 1 === MAX_GAME_PLAY + 1) {
+      addScore(
+        {
+          user: playerScore.player1,
+          bot: playerScore.player2,
+          draw: MAX_GAME_PLAY - (playerScore.player1 + playerScore.player2),
+          plays: MAX_GAME_PLAY,
+        },
+        gameLevel,
+        {}
+      );
+    }
   };
+
   //
   const resetGame = (continueGame) => {
     setGameOver({
@@ -249,6 +270,7 @@ export default function GameScreen({ gameType, changeGameType }) {
     //
     if (continueGame === false) {
       setPlayerTurn(1);
+      setGamePlaysCount(1);
       setPlayerScore({ player1: 0, player2: 0 });
     }
     //
@@ -284,10 +306,18 @@ export default function GameScreen({ gameType, changeGameType }) {
     <View style={styles.container}>
       {!gameOver.result ? (
         <>
+        
+          <GameStatsBar
+            handleScreen={handleScreen}
+            resetGame={resetGame}
+            MAX_GAME_PLAY={MAX_GAME_PLAY}
+            gamePlaysCount={gamePlaysCount}
+          />
+
           <Text
             style={{
               fontSize: 20,
-              marginTop: 30,
+              marginTop: 20,
               color: "white",
               fontWeight: "bold",
               textTransform: "uppercase",
@@ -380,11 +410,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[1] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[1] === 0 && botPlaying === false) {
                     checkWinType(1, playerTurn);
                   }
                 }}
@@ -408,11 +434,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[2] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[2] === 0 && botPlaying === false) {
                     checkWinType(2, playerTurn);
                   }
                 }}
@@ -436,11 +458,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[3] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[3] === 0 && botPlaying === false) {
                     checkWinType(3, playerTurn);
                   }
                 }}
@@ -466,11 +484,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[4] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[4] === 0 && botPlaying === false) {
                     checkWinType(4, playerTurn);
                   }
                 }}
@@ -494,11 +508,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[5] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[5] === 0 && botPlaying === false) {
                     checkWinType(5, playerTurn);
                   }
                 }}
@@ -522,11 +532,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[6] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[6] === 0 && botPlaying === false) {
                     checkWinType(6, playerTurn);
                   }
                 }}
@@ -552,11 +558,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[7] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[7] === 0 && botPlaying === false) {
                     checkWinType(7, playerTurn);
                   }
                 }}
@@ -580,11 +582,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[8] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[8] === 0 && botPlaying === false) {
                     checkWinType(8, playerTurn);
                   }
                 }}
@@ -608,11 +606,7 @@ export default function GameScreen({ gameType, changeGameType }) {
               <TouchableOpacity
                 style={styles.gameButtonDefault}
                 onPress={() => {
-                  if (
-                    gameBoardState[9] === 0 &&
-                    botPlaying === false &&
-                    gameType === 1
-                  ) {
+                  if (gameBoardState[9] === 0 && botPlaying === false) {
                     checkWinType(9, playerTurn);
                   }
                 }}
@@ -636,112 +630,18 @@ export default function GameScreen({ gameType, changeGameType }) {
             </View>
           </View>
 
-          <View style={styles.horizontal_container}>
-            <TouchableOpacity
-              onPress={() => {
-                handleGameType(null);
-              }}
-            >
-              <Image
-                source={require("../../assets/game-assets/button-menu.png")}
-                style={{
-                  width: windowWidth * 0.2,
-                  resizeMode: "contain",
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                resetGame(false);
-              }}
-            >
-              <Image
-                source={require("../../assets/game-assets/button-restart.png")}
-                style={{
-                  width: windowWidth * 0.2,
-                  resizeMode: "contain",
-                }}
-              />
-            </TouchableOpacity>
-          </View>
         </>
       ) : (
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        // AFTER GAMES
-        <>
-          <Text
-            style={{
-              fontSize: 20,
-              marginTop: 30,
-              color: "white",
-              fontWeight: "bold",
-              textTransform: "uppercase",
-            }}
-          >
-            {gameOver.message}
-          </Text>
-
-          <GamePlayPreview _gameBoardState={_gameBoardState} />
-
-          <View style={{}}>
-            <View style={styles.horizontal_container_center}>
-              <TouchableOpacity
-                onPress={() => {
-                  setGameOver({
-                    result: false,
-                    message: "New Game",
-                  });
-                  resetGame(true);
-                }}
-              >
-                <Image
-                  source={require("../../assets/game-assets/button-play-next.png")}
-                  style={{
-                    width: windowWidth * 0.2,
-                    resizeMode: "contain",
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.horizontal_container}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleGameType(null);
-                }}
-              >
-                <Image
-                  source={require("../../assets/game-assets/button-menu.png")}
-                  style={{
-                    width: windowWidth * 0.2,
-                    resizeMode: "contain",
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  resetGame(false);
-                }}
-              >
-                <Image
-                  source={require("../../assets/game-assets/button-restart.png")}
-                  style={{
-                    width: windowWidth * 0.2,
-                    resizeMode: "contain",
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </>
+        <GamePlayPreviewOnePlayer
+          playerScore={playerScore}
+          resetGame={resetGame}
+          setGameOver={setGameOver}
+          message={gameOver.message}
+          handleScreen={handleScreen}
+          _gameBoardState={_gameBoardState}
+          gamePlaysCount={gamePlaysCount}
+          MAX_GAME_PLAY={MAX_GAME_PLAY}
+        />
       )}
     </View>
   );
@@ -750,12 +650,14 @@ export default function GameScreen({ gameType, changeGameType }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 30,
     width: windowWidth,
     height: windowHeight,
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "flex-start",
   },
   gameButtonContainer: {
+    marginTop: 60,
     width: windowWidth / 1.2,
     height: windowWidth / 1.2,
   },
@@ -782,6 +684,7 @@ const styles = StyleSheet.create({
   gameScoreContainer: {
     display: "flex",
     flexDirection: "row",
+    marginTop: 30,
     alignItems: "center",
     width: windowWidth * 0.8,
     justifyContent: "space-between",

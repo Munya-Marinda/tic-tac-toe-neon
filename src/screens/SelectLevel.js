@@ -8,31 +8,17 @@ import {
   Image,
   BackHandler,
   Alert,
+  Text,
 } from "react-native";
-import { HomeScreenModals } from "../components/HomeScreenModals";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-export default function HomeScreen({ handleScreen }) {
+export default function SelectLevel({ handleGameLevel, handleScreen }) {
   //
   useEffect(() => {
     const backAction = () => {
-      Alert.alert("Exit Game", "Do you want to exit the game?", [
-        {
-          text: "Cancel",
-          onPress: () => {
-            return false;
-          },
-          style: "cancel",
-        },
-        {
-          text: "Yes",
-          onPress: () => {
-            BackHandler.exitApp();
-          },
-        },
-      ]);
+      handleScreen("Home");
       return true;
     };
 
@@ -49,42 +35,71 @@ export default function HomeScreen({ handleScreen }) {
       <Image
         source={require("../../assets/game-assets/logo.png")}
         style={{
-          width: windowWidth * 0.8,
-          height: windowWidth * 0.8 * (313 / 542),
-          marginTop: windowWidth * 0.3,
+          width: windowWidth * 0.5,
+          height: windowWidth * 0.5 * (313 / 542),
         }}
       />
+
+      <Text
+        style={{
+          fontSize: 30,
+          marginTop: 50,
+          marginBottom: 75,
+          color: "white",
+          fontWeight: "bold",
+          textTransform: "uppercase",
+        }}
+      >
+        SELECT A LEVEL
+      </Text>
+
       <View style={styles.horizontal_container}>
         <TouchableOpacity
           onPress={() => {
-            handleScreen("SelectLevel");
+            handleGameLevel(0);
+            handleScreen("OnePlayer");
           }}
         >
           <Image
-            source={require("../../assets/game-assets/button-1-player.png")}
+            source={require("../../assets/game-assets/button-easy-bot-level.png")}
             style={{
-              width: windowWidth * 0.25,
-              marginHorizontal: 30,
+              width: windowWidth * 0.4,
+              height: windowWidth * 0.4,
+              marginHorizontal: 10,
               resizeMode: "contain",
             }}
           />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            handleScreen("TwoPlayer");
+            handleGameLevel(1);
+            handleScreen("OnePlayer");
           }}
         >
           <Image
-            source={require("../../assets/game-assets/button-2-player.png")}
+            source={require("../../assets/game-assets/button-hard-bot-level.png")}
             style={{
-              width: windowWidth * 0.25,
-              marginHorizontal: 30,
+              width: windowWidth * 0.4,
+              height: windowWidth * 0.4,
+              marginHorizontal: 10,
               resizeMode: "contain",
             }}
           />
         </TouchableOpacity>
       </View>
-      <HomeScreenModals />
+      <TouchableOpacity
+        onPress={() => {
+          handleScreen("Home");
+        }}
+      >
+        <Image
+          source={require("../../assets/game-assets/button-menu.png")}
+          style={{
+            width: windowWidth * 0.2,
+            resizeMode: "contain",
+          }}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -93,8 +108,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: windowWidth,
+    paddingTop: 80,
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
   },
   horizontal_container: {
     display: "flex",
