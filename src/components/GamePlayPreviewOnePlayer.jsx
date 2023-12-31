@@ -36,6 +36,20 @@ export default function GamePlayPreviewOnePlayer({
     }
   }, [playerScore]);
   //
+  useEffect(() => {
+    console.log("message", message);
+    console.log("resetGame", resetGame);
+    console.log("playerScore", playerScore);
+    console.log("setGameOver", setGameOver);
+    console.log("handleScreen", handleScreen);
+    console.log("_gameBoardState", _gameBoardState);
+    console.log("gamePlaysCount", gamePlaysCount);
+    console.log("MAX_GAME_PLAY", MAX_GAME_PLAY);
+    console.log(
+      "----------------------------------------------------------------"
+    );
+  }, []);
+
   //
   //
   //

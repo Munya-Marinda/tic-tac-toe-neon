@@ -10,7 +10,12 @@ import {
   View,
   Dimensions,
 } from "react-native";
-import { clearScores, formatDate, getScores } from "../js/functions";
+import {
+  clearScores,
+  formatDate,
+  getScores,
+  openWebLink,
+} from "../js/functions";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -505,7 +510,21 @@ export function HomeScreenModals() {
           source={require("../../assets/game-assets/button-share.png")}
           style={styles.modal_open_button_icon}
         />
-        <Text style={styles.modal_open_button_text}>SHARE APP</Text>
+        <Text style={styles.modal_open_button_text}>SHARE</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          openWebLink(
+            "https://play.google.com/store/apps/details?id=com.munya_m.tictactoeneon&pcampaignid=web_share"
+          );
+        }}
+        style={styles.modal_open_button}
+      >
+        <Image
+          source={require("../../assets/game-assets/button-rate-app.png")}
+          style={styles.modal_open_button_icon}
+        />
+        <Text style={styles.modal_open_button_text}>RATE US</Text>
       </TouchableOpacity>
     </View>
   );

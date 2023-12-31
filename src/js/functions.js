@@ -1,11 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Linking } from "react-native";
 
 export const addScore = async (
   score = { user: 0, bot: 0, draw: 0 },
   level = 0,
   opt = {}
 ) => {
-  // console.log("ADD SCORE: ", score);
   //
   if (score === undefined || score === null || typeof score !== "object") {
     return;
@@ -27,8 +27,9 @@ export const addScore = async (
       console.log(e);
     }
   } catch (e) {}
+  //
 };
-
+//
 export const getScores = async () => {
   const scores = {};
   try {
@@ -84,3 +85,9 @@ export function formatDate(inputDate) {
 
   return `${day} ${month} ${year}`;
 }
+
+export const openWebLink = (link) => {
+  Linking.openURL(link).catch((error) =>
+    console.error("Error opening link:", error)
+  );
+};

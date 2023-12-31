@@ -32,7 +32,7 @@ export default function GameScreen({
   });
   const [botPlaying, setBotPlaying] = useState(false);
   const [playerScore, setPlayerScore] = useState({ player1: 0, player2: 0 });
-  const [_gameBoardState, set_GameBoardState] = useState({
+  const [_gameBoardState, _setGameBoardState] = useState({
     1: 0,
     2: 0,
     3: 0,
@@ -106,7 +106,7 @@ export default function GameScreen({
     //
     setPlayerTurn(_playerTurn === 1 ? 2 : 1);
     setGameBoardState(currentGameBoardState);
-    set_GameBoardState(currentGameBoardState);
+    _setGameBoardState(currentGameBoardState);
     //
     let result = null;
     //
@@ -256,7 +256,6 @@ export default function GameScreen({
       );
     }
   };
-
   //
   const resetGame = (continueGame) => {
     setGameOver({
@@ -286,7 +285,6 @@ export default function GameScreen({
       9: 0,
     });
   };
-
   //
   //
   //
@@ -306,7 +304,6 @@ export default function GameScreen({
     <View style={styles.container}>
       {!gameOver.result ? (
         <>
-        
           <GameStatsBar
             handleScreen={handleScreen}
             resetGame={resetGame}
@@ -629,7 +626,6 @@ export default function GameScreen({
               </TouchableOpacity>
             </View>
           </View>
-
         </>
       ) : (
         <GamePlayPreviewOnePlayer
